@@ -15,6 +15,8 @@ builder
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddTransient<NoteService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -28,7 +30,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapGet("/", () => "Hello World!");
-
+app.MapNoteEndpoints();
 app.Run();
 
 void ConfigAuth(WebApplicationBuilder builder)

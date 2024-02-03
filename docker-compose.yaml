@@ -1,0 +1,19 @@
+
+version: '3.1'
+
+services:
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: notedb
+      POSTGRES_PASSWORD: 12345678
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
+    volumes:
+      - shopdb:/var/lib/postgresql/data/pgdata
+
+volumes:
+  shopdb: 

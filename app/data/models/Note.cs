@@ -8,7 +8,8 @@ public class Note
 
     public NoteType NoteType { get; set; }
 
-    public User user { get; set; }
+    public User? User { get; set; }
+    // public int UserID { get; set; }
     public Tag[]? Tags { get; set; }
 
     // shows how many times the note has been viewed

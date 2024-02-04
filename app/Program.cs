@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,7 +44,8 @@ void ConfigAuth(WebApplicationBuilder builder)
     builder
         .Services
         .AddAuthorizationBuilder()
-        .AddPolicy("admin", policy => policy.RequireRole("admin"));
+        .AddPolicy("admin", policy => policy.RequireRole("admin"))
+        .AddDefaultPolicy("user", policy => policy.RequireAuthenticatedUser());
 }
 
 void ConfigCors(WebApplicationBuilder builder, string[] origins)

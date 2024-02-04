@@ -30,6 +30,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapGet("/", () => "Hello World!");
+app.MapAuthEndpoints();
 app.MapNoteEndpoints();
 app.Run();
 

@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 ConfigAuth(builder);
-ConfigCors(builder, [ "localhost:2342" ]);
+ConfigCors(builder, [ "http://localhost:2342" ]);
 
 builder
     .Services

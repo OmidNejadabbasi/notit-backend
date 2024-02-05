@@ -22,7 +22,7 @@ public static class AuthEndpoints
     )
     {
         // Use UserManager to find the user by username
-        var user = await userManager.FindByNameAsync(request.Username);
+        var user = await userManager.FindByEmailAsync(request.Email);
 
         if (user == null)
         {
@@ -39,7 +39,7 @@ public static class AuthEndpoints
             var token = GenerateJwtToken(user, configuration);
 
             // You can customize the success response as needed
-            return Results.Ok(new { Token = token });
+            return Results.Ok(new { accessToken = token });
         }
         else
         {
@@ -71,7 +71,7 @@ public static class AuthEndpoints
         }
 
         // Check if the username is already taken
-        var existingUser = await userManager.FindByNameAsync(request.Username);
+        var existingUser = await userManager.FindByEmailAsync(request.Email);
         if (existingUser != null)
         {
             return Results.BadRequest("Username is already taken");
@@ -80,7 +80,7 @@ public static class AuthEndpoints
         // You might want to add additional validation, e.g., password strength
 
         // Create a new user
-        var newUser = new User { UserName = request.Username };
+        var newUser = new User { Email = request.Email, UserName = request.Email };
         var createResult = await userManager.CreateAsync(newUser, request.Password);
 
         if (createResult.Succeeded)
@@ -89,7 +89,7 @@ public static class AuthEndpoints
             var token = GenerateJwtToken(newUser, configuration);
 
             // You can customize the success response as needed
-            return Results.Ok(new { Token = token });
+            return Results.Ok(new { accessToken = token });
         }
         else
         {
@@ -125,13 +125,13 @@ public static class AuthEndpoints
 
 public class LoginRequest
 {
-    public string Username { get; set; }
+    public string Email { get; set; }
     public string Password { get; set; }
 }
 
 public class SignUpRequest
 {
-    public string Username { get; set; }
+    public string Email { get; set; }
     public string Password { get; set; }
     // Add any additional properties for user registration
 }

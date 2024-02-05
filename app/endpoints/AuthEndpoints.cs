@@ -105,29 +105,21 @@ public static class AuthEndpoints
 
     private static string GenerateJwtToken(User user, IConfiguration configuration)
     {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(configuration["Jwt:Secret"]);
+        var securityKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(configuration["Jwt:Secret"])
+        );
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(
-                new[]
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    // Add additional claims as needed
-                }
-            ),
-            Expires = DateTime
-                .UtcNow
-                .AddHours(Convert.ToDouble(configuration["Jwt:ExpirationHours"])),
-            SigningCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(key),
-                SecurityAlgorithms.HmacSha256Signature
-            )
-        };
+        var Sectoken = new JwtSecurityToken(
+            configuration["Jwt:Issuer"],
+            configuration["Jwt:Issuer"],
+            null,
+            expires: DateTime.Now.AddMinutes(120),
+            signingCredentials: credentials
+        );
 
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
+        var token = new JwtSecurityTokenHandler().WriteToken(Sectoken);
+        return token;
     }
 }
 

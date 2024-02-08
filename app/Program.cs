@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -42,10 +43,15 @@ void ConfigAuth(WebApplicationBuilder builder)
 {
     var jwtIssuer = builder.Configuration["Jwt:Issuer"];
     var jwtKey = builder.Configuration["Jwt:Secret"];
-    builder.Services.AddIdentityApiEndpoints<User>().AddEntityFrameworkStores<MyDBContext>();
     builder
         .Services
-        .AddAuthentication(x => {
+        .AddIdentityApiEndpoints<User>()
+        .AddRoles<IdentityRole>()
+        .AddEntityFrameworkStores<MyDBContext>();
+    builder
+        .Services
+        .AddAuthentication(x =>
+        {
             x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;

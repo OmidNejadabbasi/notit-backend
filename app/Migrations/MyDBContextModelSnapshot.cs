@@ -178,7 +178,8 @@ namespace notit_backend.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("UserID")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int?>("ViewCount")
@@ -186,7 +187,7 @@ namespace notit_backend.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserID");
 
                     b.ToTable("Notes");
                 });
@@ -332,7 +333,9 @@ namespace notit_backend.Migrations
                 {
                     b.HasOne("User", "User")
                         .WithMany("Notes")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

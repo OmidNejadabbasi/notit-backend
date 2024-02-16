@@ -16,6 +16,19 @@ public class Note
     public int? ViewCount { get; set; }
 }
 
+public sealed class PartialNote
+{
+    public string? Title { get; set; }
+    public string? Content { get; set; }
+
+    public NoteType? NoteType { get; set; }
+
+    public Tag[]? Tags { get; set; }
+
+    // shows how many times the note has been viewed
+    public int? ViewCount { get; set; }
+}
+
 public enum NoteType
 {
     NOTE,

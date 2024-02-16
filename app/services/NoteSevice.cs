@@ -16,7 +16,7 @@ public class NoteService
                 n =>
                     new NoteDto
                     {
-                        NoteId = n.ID,
+                        Id = n.ID,
                         Content = n.Content,
                         CreatedAt = n.CreatedAt,
                         UpdatedAt = n.UpdatedAt,
@@ -24,7 +24,6 @@ public class NoteService
                         NoteType = n.NoteType,
                         ViewCount = n.ViewCount,
                         UserId = n.UserId,
-                        UserName = n.User.UserName,
                     }
             )
             .ToListAsync();
@@ -36,11 +35,41 @@ public class NoteService
         await db.SaveChangesAsync();
         return note;
     }
+
+    public async Task<Note> EditNote(int noteId, PartialNote partialNote, string userId)
+    {
+        var note = await db.Notes.FindAsync(noteId);
+        if (note == null || note.UserId != userId)
+        {
+            throw new Exception("Note not found or not authorized");
+        }
+
+        note.Title = partialNote.Title ?? note.Title;
+        note.Content = partialNote.Content ?? note.Content;
+        note.NoteType = partialNote.NoteType ?? note.NoteType;
+        note.ViewCount = partialNote.ViewCount ?? note.ViewCount;
+        db.Notes.Update(note);
+        db.SaveChanges();
+
+        return note;
+    }
+
+    internal async Task DeleteNote(int id, string userId)
+    {
+        var note = await db.Notes.FindAsync(id);
+        if (note == null || note.UserId != userId)
+        {
+            throw new Exception("Note not found or not authorized");
+        }
+
+        db.Notes.Remove(note);
+        await db.SaveChangesAsync();
+    }
 }
 
 public class NoteDto
 {
-    public int NoteId { get; set; }
+    public int Id { get; set; }
     public string Content { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
@@ -48,6 +77,5 @@ public class NoteDto
     public NoteType NoteType { get; set; }
     public int? ViewCount { get; set; }
     public string UserId { get; set; }
-    public string UserName { get; set; }
     // Include other necessary properties from the User object
 }
